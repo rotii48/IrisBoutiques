@@ -1,0 +1,21 @@
+Jeans,S,Dark Blue,99.90
+Jeans,M,Light Blue,99.90
+Jeans,L,Black,99.90
+Jeans,S,Black,99.90
+Jeans,M,Dark Blue,99.90
+Jeans,L,Light Blue,99.90
+Jeans,S,Black,99.90
+Jeans,M,Dark Blue,99.90
+Jeans,L,Light Blue,99.90
+
+Palazzo,S,Beige,89.90
+Palazzo,M,Olive,89.90
+Palazzo,L,Black,89.90
+Palazzo,S,Black,89.90
+Palazzo,M,Beige,89.90
+Palazzo,L,Olive,89.90
+Palazzo,S,Olive,89.90
+Palazzo,M,Black,89.90
+Palazzo,L,Beige,89.90
+
+
