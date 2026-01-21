@@ -1,0 +1,16 @@
+productId,name,price,stock,type,attr1,attr2,attr3,attr4
+P001,Floral Maxi Dress,89.90,15,Clothing,M,Pink,Cotton,15
+P002,Denim Jacket,129.90,8,Clothing,L,Blue,Denim,10
+P003,Silk Blouse,69.90,20,Clothing,S,White,Silk,20
+P004,Summer Skirt,59.90,12,Clothing,M,Yellow,Polyester,15
+P005,Cardigan Sweater,79.90,10,Clothing,L,Beige,Wool,10
+P006,Leather Handbag,199.90,5,Accessory,Bag,Gucci,true,6
+P007,Pearl Necklace,149.90,7,Accessory,Jewelry,Tiffany,true,6
+P008,Sunglasses,89.90,15,Accessory,Eyewear,RayBan,false,6
+P009,Silk Scarf,45.90,20,Accessory,Scarf,Hermes,true,6
+P010,Leather Belt,55.90,18,Accessory,Belt,Coach,false,6
+P011,Cotton T-Shirt,35.90,25,Clothing,M,Black,Cotton,10
+P012,Leather Wallet,75.90,12,Accessory,Wallet,Prada,false,6
+P013,Evening Gown,299.90,3,Clothing,M,Red,Satin,25
+P014,Designer Watch,599.90,4,Accessory,Watch,Rolex,true,6
+P015,Casual Jeans,89.90,18,Clothing,L,Blue,Denim,15
