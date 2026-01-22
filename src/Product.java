@@ -1,32 +1,29 @@
-/**
- * Product - Base class for all products
- * Demonstrates INHERITANCE concept
- * Following OOP principles from CSC435 requirements
- */
 public abstract class Product {
-    // Protected - accessible by child classes
     protected String productId;
     protected String name;
+    protected String sizeOrNumber;  // Size (S/M/L) or Shoe Number (38/39/40)
+    protected String color;
     protected double price;
     protected int stockQuantity;
     protected String category;
 
     // Constructor
-    public Product(String productId, String name, double price, int stockQuantity, String category) {
+    public Product(String productId, String name, String sizeOrNumber, String color, 
+                   double price, int stockQuantity, String category) {
         this.productId = productId;
         this.name = name;
+        this.sizeOrNumber = sizeOrNumber;
+        this.color = color;
         this.price = price;
         this.stockQuantity = stockQuantity;
         this.category = category;
     }
 
-    // Abstract method - MUST be implemented by child classes (POLYMORPHISM)
+    // Abstract methods - POLYMORPHISM
     public abstract String getProductDetails();
-
-    // Abstract method - Different calculation for different product types (POLYMORPHISM)
     public abstract double calculateFinalPrice();
 
-    // Concrete methods - shared by all products
+    // Concrete methods
     public boolean isInStock() {
         return stockQuantity > 0;
     }
@@ -41,13 +38,21 @@ public abstract class Product {
         stockQuantity += quantity;
     }
 
-    // Getters and Setters
+    // Getters
     public String getProductId() {
         return productId;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getSizeOrNumber() {
+        return sizeOrNumber;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     public double getPrice() {
@@ -70,10 +75,9 @@ public abstract class Product {
         this.stockQuantity = stockQuantity;
     }
 
-    // toString for easy display
     @Override
     public String toString() {
-        return String.format("%s | %s | RM%.2f | Stock: %d",
-                productId, name, price, stockQuantity);
+        return String.format("%s | %s (%s, %s) | RM%.2f | Stock: %d",
+                productId, name, sizeOrNumber, color, price, stockQuantity);
     }
 }

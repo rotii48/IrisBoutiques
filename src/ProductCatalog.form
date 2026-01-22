@@ -52,7 +52,8 @@
               <model>
                 <item value="All Products"/>
                 <item value="Clothing"/>
-                <item value="Accessory"/>
+                <item value="Pants"/>
+                <item value="Shoes"/>
               </model>
             </properties>
           </component>

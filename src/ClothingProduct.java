@@ -1,63 +1,43 @@
-/**
- * ClothingProduct - Extends Product
- * Demonstrates INHERITANCE and POLYMORPHISM
- * Specific attributes and behaviors for clothing items
- */
 public class ClothingProduct extends Product {
-    private String size;        // XS, S, M, L, XL
-    private String color;
     private String material;
-    private double discount;    // Percentage discount
+    private double discount;
 
     // Constructor
-    public ClothingProduct(String productId, String name, double price, int stockQuantity,
-                           String size, String color, String material, double discount) {
-        // Call parent constructor
-        super(productId, name, price, stockQuantity, "Clothing");
-        this.size = size;
-        this.color = color;
+    public ClothingProduct(String productId, String name, String size, String color, 
+                           double price, int stockQuantity, String material, double discount) {
+        super(productId, name, size, color, price, stockQuantity, "Clothing");
         this.material = material;
         this.discount = discount;
     }
 
-    // Implement abstract method - POLYMORPHISM in action!
+    // POLYMORPHISM - Override abstract method
     @Override
     public String getProductDetails() {
         return String.format(
-                "👗 CLOTHING\n" +
-                        "ID: %s\n" +
-                        "Name: %s\n" +
-                        "Size: %s | Color: %s\n" +
-                        "Material: %s\n" +
-                        "Price: RM%.2f\n" +
-                        "Discount: %.0f%%\n" +
-                        "Final Price: RM%.2f\n" +
-                        "Stock: %d units",
-                productId, name, size, color, material,
+                "👕 CLOTHING\n" +
+                "═══════════════════════════════\n" +
+                "ID: %s\n" +
+                "Product: %s\n" +
+                "Size: %s\n" +
+                "Color: %s\n" +
+                "Material: %s\n" +
+                "Original Price: RM%.2f\n" +
+                "Discount: %.0f%%\n" +
+                "Final Price: RM%.2f\n" +
+                "Stock Available: %d units\n" +
+                "═══════════════════════════════",
+                productId, name, sizeOrNumber, color, material,
                 price, discount, calculateFinalPrice(), stockQuantity
         );
     }
 
-    // Implement abstract method - Different calculation than accessories
+    // POLYMORPHISM - Different calculation (applies discount)
     @Override
     public double calculateFinalPrice() {
         return price - (price * discount / 100.0);
     }
 
-    // Additional method specific to clothing
-    public String getSizeGuide() {
-        return String.format("Size %s - Check our size chart for measurements", size);
-    }
-
-    // Getters
-    public String getSize() {
-        return size;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
+    // Additional methods
     public String getMaterial() {
         return material;
     }
@@ -66,10 +46,10 @@ public class ClothingProduct extends Product {
         return discount;
     }
 
-    // Override toString for display in lists
     @Override
     public String toString() {
-        return String.format("%s | %s (%s, %s) | RM%.2f (-%.0f%%) = RM%.2f | Stock: %d",
-                productId, name, size, color, price, discount, calculateFinalPrice(), stockQuantity);
+        return String.format("%s | %s (Size %s, %s) | RM%.2f (-%.0f%%) = RM%.2f | Stock: %d",
+                productId, name, sizeOrNumber, color, price, discount, 
+                calculateFinalPrice(), stockQuantity);
     }
 }

@@ -4,94 +4,162 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-/**
- * FileManager - Handle file reading and writing
- * FOLLOWS lecturer's pattern from SaleApp.java and RainReport.java
- * Demonstrates FILE HANDLING requirement
- */
+
 public class FileManager {
 
-    /**
-     * Load products from CSV file
-     * Format: productId,name,price,stock,type,attr1,attr2,attr3,attr4
-     * Following lecturer's Scanner pattern
-     */
-    public static Product[] loadProductsFromFile(String filename) {
-        ArrayList<Product> productList = new ArrayList<>();
 
-        try {
-            // 1 - Open file stream (LIKE LECTURER)
-            Scanner sc = new Scanner(new File(filename));
+    public static Product[] loadAllProducts() {
+        ArrayList<Product> allProducts = new ArrayList<>();
 
-            // 2 - Skip header line if exists
-            if (sc.hasNextLine()) {
-                sc.nextLine(); // Skip header
-            }
+        // Load from each file
+        allProducts.addAll(loadClothing("cloth.txt"));
+        allProducts.addAll(loadPants("pants.txt"));
+        allProducts.addAll(loadShoes("shoes.txt"));
 
-            // 3 - Loop to read all products (LIKE LECTURER)
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                String[] tokens = line.split(","); // Break into tokens (LIKE LECTURER)
+        System.out.println("✅ Loaded " + allProducts.size() + " total products");
 
-                // 4 - Parse data based on product type
-                String productId = tokens[0];
-                String name = tokens[1];
-                double price = Double.parseDouble(tokens[2]); // Parse numeric (LIKE LECTURER)
-                int stock = Integer.parseInt(tokens[3]);
-                String type = tokens[4];
-
-                // 5 - Create appropriate product object (POLYMORPHISM!)
-                Product product;
-                if (type.equalsIgnoreCase("Clothing")) {
-                    String size = tokens[5];
-                    String color = tokens[6];
-                    String material = tokens[7];
-                    double discount = Double.parseDouble(tokens[8]);
-                    product = new ClothingProduct(productId, name, price, stock,
-                            size, color, material, discount);
-                } else if (type.equalsIgnoreCase("Accessory")) {
-                    String accType = tokens[5];
-                    String brand = tokens[6];
-                    boolean giftWrap = Boolean.parseBoolean(tokens[7]);
-                    double tax = Double.parseDouble(tokens[8]);
-                    product = new AccessoryProduct(productId, name, price, stock,
-                            accType, brand, giftWrap, tax);
-                } else {
-                    continue; // Skip unknown types
-                }
-
-                productList.add(product);
-            }
-
-            // 6 - Close stream (LIKE LECTURER)
-            sc.close();
-
-        }
-        // 7 - Catch exceptions (LIKE LECTURER)
-        catch (FileNotFoundException fnf) {
-            System.err.println("File error! " + fnf.getMessage());
-        }
-        catch (Exception e) {
-            System.err.println("Error loading products: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        // Convert ArrayList to Array (FOR ARRAYS REQUIREMENT)
-        return productList.toArray(new Product[0]);
+        return allProducts.toArray(new Product[0]);
     }
 
-    /**
-     * Save order to file
-     * Following lecturer's PrintWriter pattern
-     */
+
+    private static ArrayList<Product> loadClothing(String filename) {
+        ArrayList<Product> products = new ArrayList<>();
+        int productCounter = 1;
+
+        try {
+            Scanner sc = new Scanner(new File(filename));
+
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine().trim();
+                if (line.isEmpty()) continue;
+
+                String[] tokens = line.split(",");
+                
+                String name = tokens[0].trim();         // Blouse, T-Shirt
+                String size = tokens[1].trim();         // S, M, L
+                String color = tokens[2].trim();        // White, Black, Blue
+                double price = Double.parseDouble(tokens[3].trim());
+
+                // Generate unique ID
+                String productId = String.format("C%03d", productCounter++);
+
+                // Create ClothingProduct (with default values for material and discount)
+                String material = "Cotton";  // Default material
+                double discount = 10.0;      // Default 10% discount
+
+                Product p = new ClothingProduct(productId, name, size, color, 
+                        price, 5, material, discount);  // Stock = 5 each
+                
+                products.add(p);
+            }
+
+            sc.close();
+            System.out.println("✅ Loaded " + products.size() + " clothing items from " + filename);
+
+        } catch (FileNotFoundException fnf) {
+            System.err.println("⚠️ File not found: " + filename);
+        } catch (Exception e) {
+            System.err.println("⚠️ Error loading " + filename + ": " + e.getMessage());
+        }
+
+        return products;
+    }
+
+
+    private static ArrayList<Product> loadPants(String filename) {
+        ArrayList<Product> products = new ArrayList<>();
+        int productCounter = 1;
+
+        try {
+            Scanner sc = new Scanner(new File(filename));
+
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine().trim();
+                if (line.isEmpty()) continue;
+
+                String[] tokens = line.split(",");
+                
+                String name = tokens[0].trim();         // Jeans, Palazzo
+                String size = tokens[1].trim();         // S, M, L
+                String color = tokens[2].trim();        // Dark Blue, Light Blue, etc.
+                double price = Double.parseDouble(tokens[3].trim());
+
+                // Generate unique ID
+                String productId = String.format("P%03d", productCounter++);
+
+                // Create PantsProduct (with default values)
+                String fitType = "Regular";  // Default fit
+                double discount = 15.0;      // Default 15% discount
+
+                Product p = new PantsProduct(productId, name, size, color, 
+                        price, 5, fitType, discount);  // Stock = 5 each
+                
+                products.add(p);
+            }
+
+            sc.close();
+            System.out.println("✅ Loaded " + products.size() + " pants items from " + filename);
+
+        } catch (FileNotFoundException fnf) {
+            System.err.println("⚠️ File not found: " + filename);
+        } catch (Exception e) {
+            System.err.println("⚠️ Error loading " + filename + ": " + e.getMessage());
+        }
+
+        return products;
+    }
+
+
+    private static ArrayList<Product> loadShoes(String filename) {
+        ArrayList<Product> products = new ArrayList<>();
+        int productCounter = 1;
+
+        try {
+            Scanner sc = new Scanner(new File(filename));
+
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine().trim();
+                if (line.isEmpty()) continue;
+
+                String[] tokens = line.split(",");
+                
+                String name = tokens[0].trim();         // Heels, Sneakers
+                String number = tokens[1].trim();       // 38, 39, 40
+                String color = tokens[2].trim();        // Black, Cream, White
+                double price = Double.parseDouble(tokens[3].trim());
+
+                // Generate unique ID
+                String productId = String.format("S%03d", productCounter++);
+
+                // Create ShoesProduct (with default values)
+                String brand = "iRis Collection";  // Default brand
+                double taxRate = 6.0;              // 6% tax
+
+                Product p = new ShoesProduct(productId, name, number, color, 
+                        price, 5, brand, taxRate);  // Stock = 5 each
+                
+                products.add(p);
+            }
+
+            sc.close();
+            System.out.println("✅ Loaded " + products.size() + " shoes items from " + filename);
+
+        } catch (FileNotFoundException fnf) {
+            System.err.println("⚠️ File not found: " + filename);
+        } catch (Exception e) {
+            System.err.println("⚠️ Error loading " + filename + ": " + e.getMessage());
+        }
+
+        return products;
+    }
+
+
     public static void saveOrderToFile(String filename, String customerName,
                                        Product[] orderedProducts, int[] quantities,
                                        boolean expressShipping, String paymentMethod) {
         try {
-            // 1 - Open PrintWriter stream (LIKE LECTURER)
             PrintWriter pw = new PrintWriter(filename);
 
-            // 2 - Print header (LIKE LECTURER)
             pw.println("===============================================");
             pw.println("           IRIS BOUTIQUES - ORDER RECEIPT");
             pw.println("===============================================");
@@ -104,27 +172,22 @@ public class FileManager {
             pw.println("Product\t\t\tQty\tPrice\tTotal");
             pw.println("-----------------------------------------------");
 
-            // 3 - Declare variables for footer (LIKE LECTURER)
             double totalAmount = 0.0;
 
-            // 4 - Loop through products (LIKE LECTURER)
             for (int i = 0; i < orderedProducts.length; i++) {
                 Product p = orderedProducts[i];
                 int qty = quantities[i];
 
-                // 5 - Calculate (LIKE LECTURER)
-                double itemPrice = p.calculateFinalPrice(); // POLYMORPHISM!
+                double itemPrice = p.calculateFinalPrice();
                 double itemTotal = itemPrice * qty;
 
-                // 6 - Print to file with formatting (LIKE LECTURER)
                 String format = "%-20s\t%3d\tRM%-6.2f\tRM%-8.2f\n";
-                pw.printf(format, p.getName(), qty, itemPrice, itemTotal);
+                pw.printf(format, p.getName() + " (" + p.getSizeOrNumber() + ", " + p.getColor() + ")", 
+                          qty, itemPrice, itemTotal);
 
-                // 7 - Update footer variables (LIKE LECTURER)
                 totalAmount += itemTotal;
             }
 
-            // 8 - Print footer (LIKE LECTURER)
             pw.println("-----------------------------------------------");
             pw.printf("Subtotal:\t\t\t\tRM%.2f\n", totalAmount);
 
@@ -139,44 +202,14 @@ public class FileManager {
             pw.println("Thank you for shopping with iRis Boutiques!");
             pw.println("===============================================");
 
-            // 9 - Close stream (LIKE LECTURER)
             pw.close();
 
-            System.out.println("Order saved to " + filename);
+            System.out.println("✅ Order saved to " + filename);
 
-        }
-        // 10 - Catch exceptions (LIKE LECTURER)
-        catch (FileNotFoundException fnf) {
-            System.err.println("File error! " + fnf.getMessage());
-        }
-        catch (Exception e) {
-            System.err.println("Error saving order: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Generate sales report (BONUS - like lecturer's RainReport)
-     */
-    public static void generateSalesReport(String inputFile, String outputFile) {
-        try {
-            Scanner sc = new Scanner(new File(inputFile));
-            PrintWriter pw = new PrintWriter(outputFile);
-
-            pw.println("IRIS BOUTIQUES - SALES REPORT");
-            pw.println("Generated: " + java.time.LocalDateTime.now());
-            pw.println("===============================================");
-
-            // Processing logic similar to RainReport.java
-            // Can add calculations for total sales, best selling items, etc.
-
-            pw.close();
-            sc.close();
-        }
-        catch (FileNotFoundException fnf) {
-            System.err.println(fnf.getMessage());
-        }
-        catch (Exception e) {
-            System.err.println(e.getMessage());
+        } catch (FileNotFoundException fnf) {
+            System.err.println("❌ File error! " + fnf.getMessage());
+        } catch (Exception e) {
+            System.err.println("❌ Error saving order: " + e.getMessage());
         }
     }
 }
