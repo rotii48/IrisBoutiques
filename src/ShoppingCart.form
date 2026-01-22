@@ -19,7 +19,7 @@
         </constraints>
         <properties>
           <font name="Segoe UI" size="24" style="1"/>
-          <text value="🛒 Shopping Cart"/>
+          <text value="Shopping Cart"/>
           <foreground color="-11423134"/><!-- Matcha dark green -->
         </properties>
       </component>
@@ -40,7 +40,7 @@
           <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="📦 Your Products:"/>
+          <text value="Your Products:"/>
           <font name="Segoe UI" size="14" style="1"/>
           <foreground color="-8355712"/><!-- Dark gray -->
         </properties>
@@ -80,7 +80,7 @@
           <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="⚙️ Shipping Options:"/>
+          <text value="Shipping Options:"/>
           <font name="Segoe UI" size="14" style="1"/>
           <foreground color="-8355712"/>
         </properties>
@@ -92,7 +92,7 @@
           <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="🚀 Express Shipping (+RM10)"/>
+          <text value="Express Shipping (+RM10)"/>
           <font name="Segoe UI" size="13"/>
           <foreground color="-8355712"/>
           <background color="-263951"/><!-- Transparent to parent -->
@@ -105,7 +105,7 @@
           <grid row="6" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="💳 Payment Method:"/>
+          <text value="Payment Method:"/>
           <font name="Segoe UI" size="14" style="1"/>
           <foreground color="-8355712"/>
         </properties>
@@ -128,7 +128,7 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="💵 Cash on Delivery"/>
+              <text value="Cash on Delivery"/>
               <font name="Segoe UI" size="13"/>
               <foreground color="-8355712"/>
               <background color="-263951"/>
@@ -141,7 +141,7 @@
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="💳 Credit/Debit Card"/>
+              <text value="Credit/Debit Card"/>
               <font name="Segoe UI" size="13"/>
               <foreground color="-8355712"/>
               <background color="-263951"/>
@@ -159,7 +159,7 @@
         </constraints>
         <properties>
           <font name="Segoe UI" size="16" style="1"/>
-          <text value="✨ PROCEED TO CHECKOUT"/>
+          <text value="PROCEED TO CHECKOUT"/>
           <background color="-3614177"/><!-- Strawberry dark pink -->
           <foreground color="-1"/><!-- White text -->
           <borderPainted value="false"/>

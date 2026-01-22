@@ -101,7 +101,7 @@ public class ProductCatalog extends JFrame implements ActionListener {
         
         int cartSize = ShoppingCart.getCartSize();
         if (cartSize > 0) {
-            sb.append(String.format("🛒 Items in Cart: %d\n", cartSize));
+            sb.append(String.format("Items in Cart: %d\n", cartSize));
         }
 
         txtProductList.setText(sb.toString());
@@ -197,7 +197,7 @@ public class ProductCatalog extends JFrame implements ActionListener {
         // Build special message with discount info
         StringBuilder sb = new StringBuilder();
         sb.append("╔════════════════════════════════════════════════════════════════════════════╗\n");
-        sb.append("                           🎁 SPECIAL OFFERS 🎁                               \n");
+        sb.append("                             SPECIAL OFFERS                                 \n");
         sb.append("╠════════════════════════════════════════════════════════════════════════════╣\n");
         sb.append("  ID    | Product           | Size/No | Color      | Discount | Final Price  \n");
         sb.append("╠════════════════════════════════════════════════════════════════════════════╣\n");
@@ -223,7 +223,7 @@ public class ProductCatalog extends JFrame implements ActionListener {
         
         int cartSize = ShoppingCart.getCartSize();
         if (cartSize > 0) {
-            sb.append(String.format("🛒 Items in Cart: %d\n", cartSize));
+            sb.append(String.format("Items in Cart: %d\n", cartSize));
         }
 
         txtProductList.setText(sb.toString());

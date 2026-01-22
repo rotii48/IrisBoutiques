@@ -154,6 +154,7 @@ public class FileManager {
     }
 
 
+    // ORIGINAL METHOD (kept for backward compatibility)
     public static void saveOrderToFile(String filename, String customerName,
                                        Product[] orderedProducts, int[] quantities,
                                        boolean expressShipping, String paymentMethod) {
@@ -201,6 +202,98 @@ public class FileManager {
             pw.println("===============================================");
             pw.println("Thank you for shopping with iRis Boutiques!");
             pw.println("===============================================");
+
+            pw.close();
+
+            System.out.println("✅ Order saved to " + filename);
+
+        } catch (FileNotFoundException fnf) {
+            System.err.println("❌ File error! " + fnf.getMessage());
+        } catch (Exception e) {
+            System.err.println("❌ Error saving order: " + e.getMessage());
+        }
+    }
+    
+    
+    // NEW METHOD: Save order with full customer profile
+    public static void saveOrderToFileWithProfile(String filename, 
+                                                  String customerName,
+                                                  String customerEmail,
+                                                  String customerPhone,
+                                                  String customerAddress,
+                                                  Product[] orderedProducts, 
+                                                  int[] quantities,
+                                                  boolean expressShipping, 
+                                                  String paymentMethod,
+                                                  double shippingCost) {
+        try {
+            PrintWriter pw = new PrintWriter(filename);
+
+            pw.println("╔═══════════════════════════════════════════════════════╗");
+            pw.println("║         IRIS BOUTIQUES - ORDER RECEIPT                ║");
+            pw.println("╚═══════════════════════════════════════════════════════╝");
+            pw.println();
+            pw.println("Order Date: " + java.time.LocalDateTime.now());
+            pw.println("Order ID: " + filename.replace("order_", "").replace(".txt", ""));
+            pw.println();
+            pw.println("═══════════════════════════════════════════════════════");
+            pw.println("CUSTOMER INFORMATION");
+            pw.println("═══════════════════════════════════════════════════════");
+            pw.println("Name:    " + customerName);
+            pw.println("Email:   " + customerEmail);
+            pw.println("Phone:   " + customerPhone);
+            pw.println("Address: " + customerAddress);
+            pw.println();
+            pw.println("═══════════════════════════════════════════════════════");
+            pw.println("ITEMS ORDERED");
+            pw.println("═══════════════════════════════════════════════════════");
+            pw.println();
+            pw.printf("%-25s %5s %10s %12s\n", "Product", "Qty", "Price", "Total");
+            pw.println("───────────────────────────────────────────────────────");
+
+            double subtotal = 0.0;
+
+            for (int i = 0; i < orderedProducts.length; i++) {
+                Product p = orderedProducts[i];
+                int qty = quantities[i];
+
+                double itemPrice = p.calculateFinalPrice();
+                double itemTotal = itemPrice * qty;
+
+                String productDesc = p.getName() + " (" + p.getSizeOrNumber() + ", " + p.getColor() + ")";
+                pw.printf("%-25s %5d %10.2f %12.2f\n", 
+                          productDesc.length() > 25 ? productDesc.substring(0, 25) : productDesc,
+                          qty, itemPrice, itemTotal);
+
+                subtotal += itemTotal;
+            }
+
+            pw.println("───────────────────────────────────────────────────────");
+            pw.println();
+            pw.printf("Subtotal:                                    RM %8.2f\n", subtotal);
+            
+            String shippingLabel;
+            if (shippingCost == 0.0) {
+                shippingLabel = "FREE Shipping (Order > RM100)";
+            } else if (expressShipping) {
+                shippingLabel = "Express Shipping";
+            } else {
+                shippingLabel = "Standard Shipping";
+            }
+            
+            pw.printf("%-44s RM %8.2f\n", shippingLabel + ":", shippingCost);
+            pw.println("═══════════════════════════════════════════════════════");
+            pw.printf("TOTAL AMOUNT:                                RM %8.2f\n", subtotal + shippingCost);
+            pw.println("═══════════════════════════════════════════════════════");
+            pw.println();
+            pw.println("Payment Method: " + paymentMethod);
+            pw.println();
+            pw.println("───────────────────────────────────────────────────────");
+            pw.println("          Thank you for shopping with us!             ");
+            pw.println("              iRis Boutiques - Est. 2025               ");
+            pw.println("           support@irisboutiques.com                  ");
+            pw.println("           +60 12-345 6789                            ");
+            pw.println("───────────────────────────────────────────────────────");
 
             pw.close();
 

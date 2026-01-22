@@ -4,7 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-
+/**
+ * ShoppingCart Window - With User Profile Integration
+ */
 public class ShoppingCart extends JFrame implements ActionListener {
     // STATIC storage for cart items (shared across all windows)
     private static ArrayList<Product> cartItems = new ArrayList<>();
@@ -79,7 +81,7 @@ public class ShoppingCart extends JFrame implements ActionListener {
             if (subtotal >= 100.0) {
                 chkExpressShipping.setEnabled(false);
                 chkExpressShipping.setSelected(false);
-                sb.append("\n🎉 FREE SHIPPING! (Orders above RM100)\n");
+                sb.append("\nFREE SHIPPING! (Orders above RM100)\n");
                 sb.append(String.format("Shipping: RM0.00 (FREE)\n"));
                 sb.append("═══════════════════════════════════════════════════\n");
                 sb.append(String.format("TOTAL: RM%.2f\n", subtotal));
@@ -118,6 +120,28 @@ public class ShoppingCart extends JFrame implements ActionListener {
                 return;
             }
 
+            // GET USER PROFILE
+            String customerName = ProfileWindow.getUserName();
+            String customerEmail = ProfileWindow.getUserEmail();
+            String customerPhone = ProfileWindow.getUserPhone();
+            String customerAddress = ProfileWindow.getUserAddress();
+            
+            // Check if profile is still default (not updated)
+            if (customerName.equals("Sample User")) {
+                int updateProfile = JOptionPane.showConfirmDialog(this,
+                        "You haven't updated your profile yet.\n\n" +
+                        "Would you like to update it now?\n" +
+                        "(Required for delivery information)",
+                        "Update Profile?",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                
+                if (updateProfile == JOptionPane.YES_OPTION) {
+                    new ProfileWindow();
+                    return;
+                }
+            }
+
             // Collect data
             String paymentMethod = rbCash.isSelected() ? "Cash on Delivery" : "Credit/Debit Card";
             boolean expressShipping = chkExpressShipping.isSelected();
@@ -145,10 +169,16 @@ public class ShoppingCart extends JFrame implements ActionListener {
             
             double total = subtotal + shippingCost;
 
-            // Build confirmation message
+            // Build confirmation message WITH USER INFO
             String message = "═══════════════════════════════════\n";
             message += "      ORDER CONFIRMATION\n";
             message += "═══════════════════════════════════\n\n";
+            message += "Customer Information:\n";
+            message += "Name: " + customerName + "\n";
+            message += "Email: " + customerEmail + "\n";
+            message += "Phone: " + customerPhone + "\n";
+            message += "Address: " + customerAddress + "\n\n";
+            message += "───────────────────────────────────\n\n";
             message += String.format("Total Items: %d\n", cartItems.size());
             message += String.format("Subtotal: RM%.2f\n", subtotal);
             message += String.format("Shipping: RM%.2f (%s)\n\n", shippingCost, shippingType);
@@ -165,27 +195,34 @@ public class ShoppingCart extends JFrame implements ActionListener {
             );
 
             if (confirm == JOptionPane.YES_OPTION) {
-                // Save order to file
+                // Save order to file WITH USER INFO
                 String filename = "order_" + System.currentTimeMillis() + ".txt";
 
                 try {
-                    FileManager.saveOrderToFile(
+                    // Save order with user info
+                    FileManager.saveOrderToFileWithProfile(
                             filename,
-                            "Customer",  // You can add name input later
+                            customerName,
+                            customerEmail,
+                            customerPhone,
+                            customerAddress,
                             cartItems.toArray(new Product[0]),
                             cartQuantities.stream().mapToInt(i -> i).toArray(),
                             expressShipping,
-                            paymentMethod
+                            paymentMethod,
+                            shippingCost
                     );
 
                     String successMsg = "✅ Order placed successfully!\n\n";
+                    successMsg += "Confirmation sent to: " + customerEmail + "\n\n";
                     successMsg += "Order saved to: " + filename + "\n";
                     successMsg += "Subtotal: RM" + String.format("%.2f", subtotal) + "\n";
                     successMsg += "Shipping: RM" + String.format("%.2f", shippingCost);
                     if (shippingCost == 0.0) {
-                        successMsg += " (FREE! 🎉)";
+                        successMsg += " (FREE!)";
                     }
                     successMsg += "\nTotal: RM" + String.format("%.2f", total) + "\n\n";
+                    successMsg += "Delivery to:\n" + customerAddress + "\n\n";
                     successMsg += "Thank you for shopping with iRis Boutiques!";
                     
                     JOptionPane.showMessageDialog(this,

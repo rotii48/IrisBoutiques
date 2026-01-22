@@ -14,7 +14,7 @@ public class PantsProduct extends Product {
     @Override
     public String getProductDetails() {
         return String.format(
-                "👖 PANTS\n" +
+                "PANTS\n" +
                         "═══════════════════════════════\n" +
                         "ID: %s\n" +
                         "Product: %s\n" +
