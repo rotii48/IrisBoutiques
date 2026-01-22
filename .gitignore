@@ -1,3 +1,23 @@
-# Default ignored files
-/shelf/
+# ===============================
+# IntelliJ IDEA
+# ===============================
+/.shelf/
 /workspace.xml
+
+# ===============================
+# Java build / compiled files
+# ===============================
+out/
+*.class
+
+# ===============================
+# Runtime / generated data files
+# ===============================
+order_*.txt
+user_profile.txt
+
+# ===============================
+# OS files
+# ===============================
+.DS_Store
+Thumbs.db
