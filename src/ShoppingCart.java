@@ -4,10 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-/**
- * ShoppingCart Window - FIXED VERSION
- * Now works with actual product data!
- */
+
 public class ShoppingCart extends JFrame implements ActionListener {
     // STATIC storage for cart items (shared across all windows)
     private static ArrayList<Product> cartItems = new ArrayList<>();
@@ -40,6 +37,7 @@ public class ShoppingCart extends JFrame implements ActionListener {
 
         // Add action listeners
         btnCheckout.addActionListener(this);
+        chkExpressShipping.addActionListener(this);
 
         // DISPLAY CART ITEMS
         displayCartItems();
@@ -47,13 +45,14 @@ public class ShoppingCart extends JFrame implements ActionListener {
         super.setVisible(true);
     }
 
-    /**
-     * Display all items in cart
-     */
+
     private void displayCartItems() {
         if (cartItems.isEmpty()) {
             txtProductList.setText("🛒 Your cart is empty!\n\nGo to Product Catalog to add items.");
+            chkExpressShipping.setEnabled(false);
         } else {
+            chkExpressShipping.setEnabled(true);
+            
             StringBuilder sb = new StringBuilder();
             sb.append("╔════════════════════════════════════════════════════╗\n");
             sb.append("  Product                    Qty    Price    Total   \n");
@@ -76,11 +75,27 @@ public class ShoppingCart extends JFrame implements ActionListener {
             sb.append("╚════════════════════════════════════════════════════╝\n");
             sb.append(String.format("\nSubtotal: RM%.2f\n", subtotal));
 
-            if (chkExpressShipping.isSelected()) {
-                sb.append(String.format("Express Shipping: RM10.00\n"));
-                sb.append(String.format("TOTAL: RM%.2f\n", subtotal + 10.0));
-            } else {
+            // AUTO FREE SHIPPING if subtotal >= RM100
+            if (subtotal >= 100.0) {
+                chkExpressShipping.setEnabled(false);
+                chkExpressShipping.setSelected(false);
+                sb.append("\n🎉 FREE SHIPPING! (Orders above RM100)\n");
+                sb.append(String.format("Shipping: RM0.00 (FREE)\n"));
+                sb.append("═══════════════════════════════════════════════════\n");
                 sb.append(String.format("TOTAL: RM%.2f\n", subtotal));
+            } else {
+                chkExpressShipping.setEnabled(true);
+                
+                if (chkExpressShipping.isSelected()) {
+                    sb.append(String.format("Express Shipping: RM10.00\n"));
+                    sb.append("═══════════════════════════════════════════════════\n");
+                    sb.append(String.format("TOTAL: RM%.2f\n", subtotal + 10.0));
+                } else {
+                    sb.append(String.format("Standard Shipping: RM5.00\n"));
+                    sb.append(String.format("\n💡 Tip: Add RM%.2f more for FREE shipping!\n", 100.0 - subtotal));
+                    sb.append("═══════════════════════════════════════════════════\n");
+                    sb.append(String.format("TOTAL: RM%.2f\n", subtotal + 5.0));
+                }
             }
 
             txtProductList.setText(sb.toString());
@@ -89,7 +104,11 @@ public class ShoppingCart extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnCheckout) {
+        if (e.getSource() == chkExpressShipping) {
+            // Refresh display when checkbox changes
+            displayCartItems();
+            
+        } else if (e.getSource() == btnCheckout) {
             // Check if cart is empty
             if (cartItems.isEmpty()) {
                 JOptionPane.showMessageDialog(this,
@@ -104,22 +123,37 @@ public class ShoppingCart extends JFrame implements ActionListener {
             boolean expressShipping = chkExpressShipping.isSelected();
 
             // Calculate total
-            double total = 0.0;
+            double subtotal = 0.0;
             for (int i = 0; i < cartItems.size(); i++) {
-                total += cartItems.get(i).calculateFinalPrice() * cartQuantities.get(i);
+                subtotal += cartItems.get(i).calculateFinalPrice() * cartQuantities.get(i);
             }
-            if (expressShipping) {
-                total += 10.0;
+            
+            double shippingCost = 0.0;
+            String shippingType = "";
+            
+            // FREE SHIPPING if subtotal >= RM100
+            if (subtotal >= 100.0) {
+                shippingCost = 0.0;
+                shippingType = "FREE Shipping (Order above RM100)";
+            } else if (expressShipping) {
+                shippingCost = 10.0;
+                shippingType = "Express Shipping";
+            } else {
+                shippingCost = 5.0;
+                shippingType = "Standard Shipping";
             }
+            
+            double total = subtotal + shippingCost;
 
             // Build confirmation message
             String message = "═══════════════════════════════════\n";
             message += "      ORDER CONFIRMATION\n";
             message += "═══════════════════════════════════\n\n";
             message += String.format("Total Items: %d\n", cartItems.size());
-            message += String.format("Total Amount: RM%.2f\n\n", total);
-            message += "Payment: " + paymentMethod + "\n";
-            message += "Shipping: " + (expressShipping ? "Express (+RM10)" : "Standard") + "\n\n";
+            message += String.format("Subtotal: RM%.2f\n", subtotal);
+            message += String.format("Shipping: RM%.2f (%s)\n\n", shippingCost, shippingType);
+            message += String.format("TOTAL AMOUNT: RM%.2f\n\n", total);
+            message += "Payment: " + paymentMethod + "\n\n";
             message += "Proceed with checkout?";
 
             int confirm = JOptionPane.showConfirmDialog(
@@ -144,11 +178,18 @@ public class ShoppingCart extends JFrame implements ActionListener {
                             paymentMethod
                     );
 
+                    String successMsg = "✅ Order placed successfully!\n\n";
+                    successMsg += "Order saved to: " + filename + "\n";
+                    successMsg += "Subtotal: RM" + String.format("%.2f", subtotal) + "\n";
+                    successMsg += "Shipping: RM" + String.format("%.2f", shippingCost);
+                    if (shippingCost == 0.0) {
+                        successMsg += " (FREE! 🎉)";
+                    }
+                    successMsg += "\nTotal: RM" + String.format("%.2f", total) + "\n\n";
+                    successMsg += "Thank you for shopping with iRis Boutiques!";
+                    
                     JOptionPane.showMessageDialog(this,
-                            "✅ Order placed successfully!\n\n" +
-                                    "Order saved to: " + filename + "\n" +
-                                    "Total: RM" + String.format("%.2f", total) + "\n\n" +
-                                    "Thank you for shopping with iRis Boutiques!",
+                            successMsg,
                             "Order Success",
                             JOptionPane.INFORMATION_MESSAGE);
 

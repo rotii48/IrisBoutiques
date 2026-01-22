@@ -18,8 +18,17 @@ public class ProductCatalog extends JFrame implements ActionListener {
     // ARRAYS
     private Product[] allProducts;
     private Product[] filteredProducts;
+    private String filterType = null; // NEW: Store filter type
 
+    // Default constructor
     public ProductCatalog() {
+        this(null);
+    }
+    
+    // NEW: Constructor with filter type
+    public ProductCatalog(String filterType) {
+        this.filterType = filterType;
+        
         super.setTitle("Product Catalog - iRis Boutiques");
         super.setSize(800, 600);
         super.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -28,7 +37,22 @@ public class ProductCatalog extends JFrame implements ActionListener {
         cp.add(pnlMain);
 
         loadProducts();
-        displayProducts(allProducts);
+        
+        // Apply filter based on type
+        if (filterType != null && !filterType.isEmpty()) {
+            if (filterType.equals("new_arrivals")) {
+                filterNewArrivals();
+            } else if (filterType.equals("best_sellers")) {
+                filterBestSellers();
+            } else if (filterType.equals("special_offers")) {
+                filterSpecialOffers();
+            } else {
+                // Regular search filter
+                filterProductsBySearch(filterType);
+            }
+        } else {
+            displayProducts(allProducts);
+        }
 
         btnRefresh.addActionListener(this);
         btnViewDetails.addActionListener(this);
@@ -104,6 +128,140 @@ public class ProductCatalog extends JFrame implements ActionListener {
         }
         displayProducts(filteredProducts);
     }
+    
+    // NEW: Filter for New Arrivals (last 3 products from each category)
+    private void filterNewArrivals() {
+        // For demo: Get latest products (assume higher IDs = newer)
+        // In real app, you'd have a "dateAdded" field
+        int count = Math.min(6, allProducts.length); // Show max 6 newest
+        filteredProducts = new Product[count];
+        
+        // Get last 6 products (newest)
+        int startIndex = Math.max(0, allProducts.length - count);
+        for (int i = 0; i < count; i++) {
+            filteredProducts[i] = allProducts[startIndex + i];
+        }
+        
+        displayProducts(filteredProducts);
+    }
+    
+    // NEW: Filter for Best Sellers (products with lowest stock = most sold)
+    private void filterBestSellers() {
+        // For demo: Products with specific IDs or criteria
+        // In real app, you'd track sales count
+        filteredProducts = new Product[3];
+        int index = 0;
+        
+        // Pick specific best sellers
+        for (Product p : allProducts) {
+            if (p != null && index < 3) {
+                String id = p.getProductId();
+                // C001, P001, S001 are best sellers
+                if (id.equals("C001") || id.equals("P001") || id.equals("S001")) {
+                    filteredProducts[index++] = p;
+                }
+            }
+        }
+        
+        displayProducts(filteredProducts);
+    }
+    
+    // NEW: Filter for Special Offers (products with discounts)
+    private void filterSpecialOffers() {
+        int count = 0;
+        
+        // Count products with discount
+        for (Product p : allProducts) {
+            if (p != null) {
+                if (p instanceof ClothingProduct && ((ClothingProduct)p).getDiscount() > 0) {
+                    count++;
+                } else if (p instanceof PantsProduct && ((PantsProduct)p).getDiscount() > 0) {
+                    count++;
+                }
+            }
+        }
+        
+        filteredProducts = new Product[count];
+        int index = 0;
+        
+        for (Product p : allProducts) {
+            if (p != null) {
+                if (p instanceof ClothingProduct && ((ClothingProduct)p).getDiscount() > 0) {
+                    filteredProducts[index++] = p;
+                } else if (p instanceof PantsProduct && ((PantsProduct)p).getDiscount() > 0) {
+                    filteredProducts[index++] = p;
+                }
+            }
+        }
+        
+        // Build special message with discount info
+        StringBuilder sb = new StringBuilder();
+        sb.append("╔════════════════════════════════════════════════════════════════════════════╗\n");
+        sb.append("                           🎁 SPECIAL OFFERS 🎁                               \n");
+        sb.append("╠════════════════════════════════════════════════════════════════════════════╣\n");
+        sb.append("  ID    | Product           | Size/No | Color      | Discount | Final Price  \n");
+        sb.append("╠════════════════════════════════════════════════════════════════════════════╣\n");
+
+        for (int i = 0; i < filteredProducts.length; i++) {
+            Product p = filteredProducts[i];
+            if (p != null) {
+                double discount = 0;
+                if (p instanceof ClothingProduct) {
+                    discount = ((ClothingProduct)p).getDiscount();
+                } else if (p instanceof PantsProduct) {
+                    discount = ((PantsProduct)p).getDiscount();
+                }
+                
+                sb.append(String.format("  %-6s| %-18s| %-8s| %-11s| %.0f%% OFF | RM%-10.2f\n",
+                        p.getProductId(), p.getName(), p.getSizeOrNumber(),
+                        p.getColor(), discount, p.calculateFinalPrice()));
+            }
+        }
+
+        sb.append("╚════════════════════════════════════════════════════════════════════════════╝\n");
+        sb.append(String.format("\nSpecial Offers: %d products\n", filteredProducts.length));
+        
+        int cartSize = ShoppingCart.getCartSize();
+        if (cartSize > 0) {
+            sb.append(String.format("🛒 Items in Cart: %d\n", cartSize));
+        }
+
+        txtProductList.setText(sb.toString());
+    }
+    
+    // Filter products by search term (name or category)
+    private void filterProductsBySearch(String searchText) {
+        String searchLower = searchText.toLowerCase();
+        int count = 0;
+        
+        // Count matches
+        for (Product p : allProducts) {
+            if (p != null) {
+                String nameLower = p.getName().toLowerCase();
+                String categoryLower = p.getCategory().toLowerCase();
+                
+                if (nameLower.contains(searchLower) || categoryLower.contains(searchLower)) {
+                    count++;
+                }
+            }
+        }
+        
+        // Create filtered array
+        filteredProducts = new Product[count];
+        int index = 0;
+        for (Product p : allProducts) {
+            if (p != null) {
+                String nameLower = p.getName().toLowerCase();
+                String categoryLower = p.getCategory().toLowerCase();
+                
+                if (nameLower.contains(searchLower) || categoryLower.contains(searchLower)) {
+                    filteredProducts[index++] = p;
+                }
+            }
+        }
+        
+        displayProducts(filteredProducts);
+    }
 
     private Product findProductById(String productId) {
         for (int i = 0; i < filteredProducts.length; i++) {
@@ -120,11 +278,13 @@ public class ProductCatalog extends JFrame implements ActionListener {
         if (e.getSource() == cmbCategory) {
             String category = (String) cmbCategory.getSelectedItem();
             filterProducts(category);
+            filterType = null; // Clear filter type when using category
 
         } else if (e.getSource() == btnRefresh) {
             loadProducts();
             filterProducts("All Products");
             cmbCategory.setSelectedIndex(0);
+            filterType = null; // Clear filter type
             JOptionPane.showMessageDialog(this, "✅ Products refreshed!");
 
         } else if (e.getSource() == btnViewDetails) {
@@ -164,7 +324,21 @@ public class ProductCatalog extends JFrame implements ActionListener {
                                                 product.getName(), product.getSizeOrNumber(), product.getColor(),
                                                 qty, product.calculateFinalPrice() * qty, ShoppingCart.getCartSize()),
                                         "Success", JOptionPane.INFORMATION_MESSAGE);
-                                displayProducts(filteredProducts);
+                                
+                                // Reapply current filter
+                                if (filterType != null) {
+                                    if (filterType.equals("new_arrivals")) {
+                                        filterNewArrivals();
+                                    } else if (filterType.equals("best_sellers")) {
+                                        filterBestSellers();
+                                    } else if (filterType.equals("special_offers")) {
+                                        filterSpecialOffers();
+                                    } else {
+                                        filterProductsBySearch(filterType);
+                                    }
+                                } else {
+                                    displayProducts(filteredProducts);
+                                }
                             } else {
                                 JOptionPane.showMessageDialog(this, "Invalid quantity!", "Error",
                                         JOptionPane.ERROR_MESSAGE);
